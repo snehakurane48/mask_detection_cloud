@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+.env
+.env.*
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+
+# IDEs and editors
+.vscode/
+.idea/
+
+# Data and models
+dataset/
+results/
+tflite_model/
+*.h5
+*.tflite
+
+# OS files
+.DS_Store
+Thumbs.db
