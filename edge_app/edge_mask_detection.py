@@ -3,7 +3,7 @@ import numpy as np
 import tensorflow as tf
 import time
 
-interpreter = tf.lite.Interpreter(model_path="tflite_model/mask_model.tflite")
+interpreter = tf.lite.Interpreter(model_path="../tflite_model/mask_model.tflite")
 interpreter.allocate_tensors()
 
 input_details = interpreter.get_input_details()

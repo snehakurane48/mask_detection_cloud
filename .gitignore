@@ -18,11 +18,7 @@ dist/
 .idea/
 
 # Data and models
-dataset/
-results/
-tflite_model/
-*.h5
-*.tflite
+# (Removed from ignore to allow uploading datasets and trained models)
 
 # OS files
 .DS_Store

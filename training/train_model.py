@@ -1,43 +1,47 @@
 import tensorflow as tf
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.applications import MobileNetV2
-from tensorflow.keras import layers, models
+from tensorflow.keras.layers import Dense, Flatten
+from tensorflow.keras.models import Model
 
-data_dir = "../dataset/mask_detection_dataset/data"
-img_size = (224, 224)
-batch_size = 32
+train_dir = "../dataset/mask_detection_dataset/data"
 
-train_ds = tf.keras.utils.image_dataset_from_directory(
-    data_dir,
-    validation_split=0.2,
-    subset="training",
-    seed=123,
-    image_size=img_size,
-    batch_size=batch_size
+datagen = ImageDataGenerator(
+    rescale=1./255,
+    validation_split=0.2
 )
 
-val_ds = tf.keras.utils.image_dataset_from_directory(
-    data_dir,
-    validation_split=0.2,
-    subset="validation",
-    seed=123,
-    image_size=img_size,
-    batch_size=batch_size
+train_data = datagen.flow_from_directory(
+    train_dir,
+    target_size=(224,224),
+    batch_size=32,
+    class_mode="binary",
+    subset="training"
+)
+
+val_data = datagen.flow_from_directory(
+    train_dir,
+    target_size=(224,224),
+    batch_size=32,
+    class_mode="binary",
+    subset="validation"
 )
 
 base_model = MobileNetV2(
-    input_shape=(224, 224, 3),
+    weights="imagenet",
     include_top=False,
-    weights="imagenet"
+    input_shape=(224,224,3)
 )
 
-base_model.trainable = False
+x = base_model.output
+x = Flatten()(x)
+x = Dense(128, activation="relu")(x)
+output = Dense(1, activation="sigmoid")(x)
 
-model = models.Sequential([
-    layers.Rescaling(1./255),
-    base_model,
-    layers.GlobalAveragePooling2D(),
-    layers.Dense(1, activation="sigmoid")
-])
+model = Model(inputs=base_model.input, outputs=output)
+
+for layer in base_model.layers:
+    layer.trainable = False
 
 model.compile(
     optimizer="adam",
@@ -46,10 +50,11 @@ model.compile(
 )
 
 model.fit(
-    train_ds,
-    validation_data=val_ds,
+    train_data,
+    validation_data=val_data,
     epochs=5
 )
 
+model.save("../results/mask_model.keras")
 
-model.save("../results/mask_model.h5")
+print("Model trained and saved successfully")
