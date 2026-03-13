@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Mask Detection Result</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+<body>
+
+<h2>Face Mask Detection Result</h2>
+
+<h3>Edge Inference</h3>
+<p><b>Prediction:</b> {{ edge_prediction }}</p>
+<p><b>Latency:</b> {{ edge_latency }} ms</p>
+
+<h3>Cloud Inference</h3>
+<p><b>Prediction:</b> {{ cloud_prediction }}</p>
+<p><b>Latency:</b> {{ cloud_latency }} ms</p>
+
+<h3>Latency Comparison</h3>
+
+<div style="width:400px; height:250px; margin:auto;">
+    <canvas id="latencyChart"></canvas>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+const ctx = document.getElementById('latencyChart');
+
+new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: ['Edge', 'Cloud'],
+        datasets: [{
+            label: 'Latency (ms)',
+            data: [{{ edge_latency }}, {{ cloud_latency }}],
+            backgroundColor: [
+                'green',
+                'red'
+            ]
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false
+    }
+});
+</script>
+
+<br>
+<a href="/">Upload Another Image</a>
+
+</body>
+</html>

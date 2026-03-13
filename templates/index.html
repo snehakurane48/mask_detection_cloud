@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Face Mask Detection</title>
+<style>
+body{font-family:Arial;text-align:center}
+video{border:2px solid black}
+</style>
+</head>
+
+<body>
+
+<h2>Face Mask Detection</h2>
+
+<form action="/predict" method="post" enctype="multipart/form-data">
+
+<h3>Upload Image</h3>
+<input type="file" name="image">
+<br><br>
+<button type="submit">Predict</button>
+
+</form>
+
+<h3>Capture from Laptop Camera</h3>
+
+<video id="video" width="320" height="240" autoplay></video>
+<br><br>
+
+<button onclick="capture()">Capture</button>
+
+<form action="/predict" method="post">
+<input type="hidden" name="image" id="imageData">
+<br>
+<button type="submit">Predict from Camera</button>
+</form>
+
+<canvas id="canvas" style="display:none;"></canvas>
+
+<script>
+
+navigator.mediaDevices.getUserMedia({video:true})
+.then(function(stream){
+document.getElementById("video").srcObject = stream
+})
+
+function capture(){
+
+const video=document.getElementById("video")
+const canvas=document.getElementById("canvas")
+
+canvas.width=224
+canvas.height=224
+
+const ctx=canvas.getContext("2d")
+ctx.drawImage(video,0,0,224,224)
+
+const data=canvas.toDataURL("image/jpeg",0.7)
+
+document.getElementById("imageData").value=data
+
+alert("Image Captured")
+}
+
+</script>
+
+</body>
+</html>
